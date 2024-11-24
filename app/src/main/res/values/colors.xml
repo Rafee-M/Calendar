@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red_text">@color/red_missed</color>
+    <color name="default_birthdays_color">@color/ic_messages</color>
+    <color name="default_holidays_color">@color/ic_dialer</color>
+    <color name="default_anniversaries_color">@color/red_missed</color>
+
+    <color name="default_widget_text_color">@color/red_missed</color>
+</resources>

@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/event_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_primary"
+        app:menu="@menu/menu_event"
+        app:title="@string/app_launcher_name"
+        app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/event_nested_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/activity_padding_left_right"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/event_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/eventTitleHolder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/eventTitleWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/normal_margin"
+                    android:orientation="vertical">
+
+                    <com.goodwy.commons.views.MyEditText
+                        android:id="@+id/event_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/settings_margin"
+                        android:paddingVertical="@dimen/medium_margin"
+                        android:background="@null"
+                        android:hint="@string/title"
+                        android:inputType="textCapSentences"
+                        android:maxLength="180"
+                        android:maxLines="1"
+                        android:minEms="20"
+                        android:textCursorDrawable="@null"
+                        android:textSize="@dimen/bigger_text_size" />
+
+                    <include
+                        layout="@layout/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <RelativeLayout
+                        android:id="@+id/event_location_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.goodwy.commons.views.MyEditText
+                            android:id="@+id/event_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@+id/event_show_on_map"
+                            android:paddingHorizontal="@dimen/settings_margin"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:background="@null"
+                            android:hint="@string/location"
+                            android:inputType="textCapWords"
+                            android:maxLength="180"
+                            android:maxLines="1"
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/bigger_text_size" />
+
+                        <ImageView
+                            android:id="@+id/event_show_on_map"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/location"
+                            android:padding="@dimen/small_margin"
+                            android:src="@drawable/ic_place_vector" />
+                    </RelativeLayout>
+
+                    <include
+                        layout="@layout/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <com.goodwy.commons.views.MyEditText
+                        android:id="@+id/event_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/settings_margin"
+                        android:paddingVertical="@dimen/medium_margin"
+                        android:background="@null"
+                        android:autoLink="all"
+                        android:gravity="top"
+                        android:hint="@string/description"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:linksClickable="true"
+                        android:minEms="20"
+                        android:textCursorDrawable="@null"
+                        android:textSize="@dimen/bigger_text_size" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_time_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_time_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/event_all_day_holder"
+                        style="@style/SettingsHolderSwitchStyle">
+
+                        <com.goodwy.commons.views.MyMaterialSwitch
+                            android:id="@+id/event_all_day"
+                            style="@style/SettingsSwitchStyle"
+                            android:text="@string/all_day"
+                            app:switchPadding="@dimen/bigger_margin"/>
+                    </RelativeLayout>
+
+                    <include
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_start_date_wrapper"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_start_date_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:text="@string/starts"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_start_date"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_start_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:background="@drawable/button_rounded_8dp"
+                            android:paddingHorizontal="@dimen/normal_margin"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:textSize="@dimen/bigger_text_size"
+                            app:layout_goneMarginEnd="@dimen/settings_margin"
+                            app:layout_constraintEnd_toStartOf="@+id/event_start_time"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="January 1 1970" />
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_start_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="@drawable/button_rounded_8dp"
+                            android:paddingHorizontal="@dimen/normal_margin"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:textSize="@dimen/bigger_text_size"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="00:00" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_end_date_wrapper"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_end_date_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:text="@string/ends"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_end_date"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_end_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:background="@drawable/button_rounded_8dp"
+                            android:paddingHorizontal="@dimen/normal_margin"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:textSize="@dimen/bigger_text_size"
+                            app:layout_goneMarginEnd="@dimen/settings_margin"
+                            app:layout_constraintEnd_toStartOf="@+id/event_end_time"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="January 1 1970" />
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_end_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="@drawable/button_rounded_8dp"
+                            android:paddingHorizontal="@dimen/normal_margin"
+                            android:paddingVertical="@dimen/medium_margin"
+                            android:textSize="@dimen/bigger_text_size"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="00:00" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        android:id="@+id/event_time_zone_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <RelativeLayout
+                        android:id="@+id/event_time_zone_holder"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_time_zone_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@+id/event_time_zone"
+                            android:text="@string/time_zone"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_time_zone"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            tools:text="Europe/Bratislava"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_repetitions_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_repetitions_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/event_repetition_holder"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@+id/event_repetition"
+                            android:text="@string/repeat"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition"
+                            style="@style/SettingsTextValueStyle"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            tools:text="@string/no_repetition"/>
+                    </RelativeLayout>
+
+                    <include
+                        android:id="@+id/event_repetition_rule_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"
+                        android:visibility="gone"/>
+
+                    <RelativeLayout
+                        android:id="@+id/event_repetition_rule_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition_rule_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@+id/event_repetition_rule"
+                            android:text="@string/repeat_on"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition_rule"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            tools:text="@string/every_day"/>
+                    </RelativeLayout>
+
+                    <include
+                        android:id="@+id/event_repetition_limit_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"
+                        android:visibility="gone"/>
+
+                    <RelativeLayout
+                        android:id="@+id/event_repetition_limit_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition_limit_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@+id/event_repetition_limit"
+                            android:text="@string/repeat_till"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_repetition_limit"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:text="@string/forever"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_reminder_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_reminder_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_reminder_1_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_reminder_1_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/reminders"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_reminder_1"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_reminder_1"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:paddingHorizontal="@dimen/small_margin"
+                            app:layout_constraintEnd_toStartOf="@+id/event_reminder_1_type"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="@string/no_reminder" />
+
+                        <ImageView
+                            android:id="@+id/event_reminder_1_type"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_bell_vector"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        android:id="@+id/event_reminder_2_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"
+                        android:visibility="gone"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_reminder_2_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_reminder_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:layout_centerVertical="true"
+                            android:paddingHorizontal="@dimen/medium_margin"
+                            android:alpha="0.4"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:text="@string/add_another_reminder"
+                            android:textSize="@dimen/bigger_text_size"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintEnd_toStartOf="@+id/event_reminder_2_type"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="@string/add_another_reminder" />
+
+                        <ImageView
+                            android:id="@+id/event_reminder_2_type"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_bell_vector"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        android:id="@+id/event_reminder_3_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"
+                        android:visibility="gone"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_reminder_3_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_reminder_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:layout_centerVertical="true"
+                            android:paddingHorizontal="@dimen/medium_margin"
+                            android:alpha="0.4"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:text="@string/add_another_reminder"
+                            android:textSize="@dimen/bigger_text_size"
+                            android:textAlignment="viewEnd"
+                            app:layout_constraintEnd_toStartOf="@+id/event_reminder_3_type"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="@string/add_another_reminder" />
+
+                        <ImageView
+                            android:id="@+id/event_reminder_3_type"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_bell_vector"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_types_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_types_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/event_color_holder"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_color_text"
+                            style="@style/SettingsTextLabelStyle"
+                            android:text="@string/event_color"/>
+
+                        <ImageView
+                            android:id="@+id/event_color"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:clickable="false"
+                            android:contentDescription="@null" />
+                    </RelativeLayout>
+
+                    <include
+                        android:id="@+id/event_caldav_calendar_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_caldav_calendar_holder"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_caldav_calendar_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:text="@string/calendar_short"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_caldav_calendar_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:gravity="end"
+                            android:ellipsize="end"
+                            android:textAlignment="viewEnd"
+                            android:maxLines="1"
+                            android:textSize="@dimen/bigger_text_size"
+                            android:alpha="0.6"
+                            android:paddingTop="@dimen/small_margin"
+                            app:layout_constraintStart_toEndOf="@+id/event_caldav_calendar_label"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/event_caldav_calendar_email"
+                            tools:text="My calendar" />
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_caldav_calendar_email"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:gravity="end"
+                            android:ellipsize="end"
+                            android:textAlignment="viewEnd"
+                            android:maxLines="1"
+                            android:textSize="@dimen/meta_text_size"
+                            android:alpha="0.6"
+                            android:paddingBottom="@dimen/smaller_margin"
+                            app:layout_constraintStart_toEndOf="@+id/event_caldav_calendar_label"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/event_caldav_calendar_name"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="hello@mail.com" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        android:id="@+id/event_type_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <RelativeLayout
+                        android:id="@+id/event_type_holder"
+                        style="@style/SettingsHolderStyle">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_type_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@+id/event_type"
+                            android:text="@string/event_type"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_type"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            tools:text="Meet"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_statuses_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_statuses_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_status_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_status_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/availability"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_status"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_status"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:paddingHorizontal="@dimen/small_margin"
+                            android:text="@string/status_confirmed"
+                            app:layout_constraintEnd_toStartOf="@+id/event_status_image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/event_status_image"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:src="@drawable/ic_check_circle_outline_vector"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        android:id="@+id/vent_availability_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_availability_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_availability_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/availability"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_availability"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_availability"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:paddingHorizontal="@dimen/small_margin"
+                            android:text="@string/status_busy"
+                            app:layout_constraintEnd_toStartOf="@+id/event_availability_image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/event_availability_image"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:src="@drawable/ic_event_busy_vector"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/event_attendees_wrapper_holder"
+                style="@style/SettingsSectionHolder"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="@dimen/ten_dpi"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/event_attendees_wrapper"
+                    style="@style/SettingsHolderStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.goodwy.commons.views.MyTextView
+                        android:id="@+id/event_attendees_label"
+                        style="@style/SettingsTextLabelStyle"
+                        android:paddingVertical="@dimen/medium_margin"
+                        android:text="@string/attendees"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/event_end_date"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:ignore="TooManyViews" />
+
+                    <LinearLayout
+                        android:id="@+id/event_attendees_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="68dp"
+                tools:ignore="UselessLeaf" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

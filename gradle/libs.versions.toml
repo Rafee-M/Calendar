@@ -1,0 +1,54 @@
+[versions]
+#jetbrains
+kotlin = "1.9.25"
+#KSP
+ksp = "1.9.25-1.0.20"
+#Detekt
+detekt = "1.23.3"
+#Androidx
+multidex = "2.0.1"
+print = "1.0.0"
+constraintlayout = "2.2.0"
+swiperefreshlayout = "1.1.0"
+#Room
+room = "2.6.1"
+#Goodwy
+right-commons = "3c8f3a8948"
+rustore = "5.1.1"
+rxAnimation = "2.1.1"
+#Gradle
+gradlePlugins-agp = "8.7.2"
+#build
+app-build-compileSDKVersion = "34"
+app-build-targetSDK = "34"
+app-build-minimumSDK = "26"
+app-build-javaVersion = "VERSION_17"
+app-build-kotlinJVMTarget = "17"
+#versioning
+app-version-appId = "com.goodwy.calendar"
+app-version-versionCode = "600"
+app-version-versionName = "6.0.0"
+[libraries]
+#Android X
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+androidx-print = { module = "androidx.print:print", version.ref = "print" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+#Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+#Goodwy
+goodwy-commons = { module = "com.github.Goodwy:Goodwy-Commons", version.ref = "right-commons" }
+rustore-client = { module = "ru.rustore.sdk:billingclient", version.ref = "rustore" }
+rx-animation = { module = "com.mikhaellopez:rxanimation", version.ref = "rxAnimation" }
+[bundles]
+room = [
+    "androidx-room-ktx",
+    "androidx-room-runtime",
+]
+[plugins]
+android = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

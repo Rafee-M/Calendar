@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_date_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_date_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/squircle_bg"
+        android:layout_above="@+id/widget_name"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/widget_name"
+        android:orientation="vertical"
+        android:weightSum="20">
+
+        <TextView
+            android:id="@+id/widget_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:textSize="@dimen/bigger_text_size"
+            android:text=" "
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:id="@+id/widget_month_week"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextClock
+                android:id="@+id/widget_day_week"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="2dp"
+                android:autoSizeTextType="uniform"
+                android:format12Hour="EE"
+                android:format24Hour="EE"
+                android:gravity="end|bottom"
+                android:includeFontPadding="false"
+                android:textColor="@color/red_missed"
+                android:textSize="@dimen/bigger_text_size"
+                android:textStyle="bold"
+                tools:ignore="NestedWeights" />
+
+            <TextClock
+                android:id="@+id/widget_month"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="1dp"
+                android:autoSizeTextType="uniform"
+                android:format12Hour="MMM"
+                android:format24Hour="MMM"
+                android:gravity="start|bottom"
+                android:alpha="0.6"
+                android:includeFontPadding="false"
+                android:textColor="@color/md_grey_black"
+                android:textSize="@dimen/bigger_text_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextClock
+            android:id="@+id/widget_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:autoSizeTextType="uniform"
+            android:format12Hour="d"
+            android:format24Hour="d"
+            android:gravity="center|top"
+            android:includeFontPadding="false"
+            android:paddingBottom="@dimen/small_margin"
+            android:textColor="@color/md_grey_black"
+            android:textSize="32sp"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/widget_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:textSize="@dimen/bigger_text_size"
+            android:text=" "
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:ellipsize="end"
+        android:gravity="center|bottom"
+        android:includeFontPadding="false"
+        android:lines="1"
+        android:paddingTop="@dimen/small_margin"
+        android:paddingHorizontal="@dimen/tiny_margin"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        android:text="@string/app_launcher_name" />
+
+</RelativeLayout>

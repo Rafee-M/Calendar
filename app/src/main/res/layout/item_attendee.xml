@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_attendee_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/tiny_margin"
+    android:paddingBottom="@dimen/tiny_margin">
+
+    <com.goodwy.commons.views.MyAutoCompleteTextView
+        android:id="@+id/event_attendee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_margin"
+        android:layout_centerVertical="true"
+        android:completionThreshold="2"
+        android:hint="@string/add_another_attendee"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/bigger_text_size"
+        tools:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/event_contact_attendee"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_alignTop="@+id/event_attendee"
+        android:layout_alignBottom="@+id/event_attendee"
+        android:background="?attr/selectableItemBackground"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/event_contact_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginVertical="@dimen/tiny_margin"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            tools:src="@drawable/ic_question_yellow" />
+
+        <ImageView
+            android:id="@+id/event_contact_status_image"
+            android:layout_width="@dimen/avatar_status_size"
+            android:layout_height="@dimen/avatar_status_size"
+            android:layout_alignEnd="@+id/event_contact_image"
+            android:layout_alignBottom="@+id/event_contact_image"
+            android:adjustViewBounds="true"
+            android:background="@drawable/attendee_status_circular_background"
+            android:padding="@dimen/tiny_margin"
+            android:src="@drawable/ic_question_yellow"
+            android:contentDescription="@null"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.goodwy.commons.views.MyTextView
+            android:id="@+id/event_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="36dp"
+            android:layout_toStartOf="@+id/event_contact_dismiss"
+            android:layout_toEndOf="@+id/event_contact_image"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textSize="@dimen/bigger_text_size" />
+
+        <ImageView
+            android:id="@+id/event_contact_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/smaller_margin"
+            android:alpha="0.8"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/small_margin"
+            android:src="@drawable/ic_cancel" />
+
+        <com.goodwy.commons.views.MyTextView
+            android:id="@+id/event_contact_me_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/activity_margin"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:lines="1"
+            android:textSize="@dimen/bigger_text_size"
+            tools:text="@string/invited" />
+
+    </RelativeLayout>
+</RelativeLayout>
