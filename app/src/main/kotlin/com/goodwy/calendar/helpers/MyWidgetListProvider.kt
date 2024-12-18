@@ -46,6 +46,7 @@ class MyWidgetListProvider : AppWidgetProvider() {
                     setTextColor(R.id.widget_event_list_today, textColor)
                     setTextSize(R.id.widget_event_list_today, fontSize - 3f)
                     setVisibleIf(R.id.widget_name, context.config.showWidgetName)
+                    setTextColor(R.id.widget_name, context.config.widgetLabelColor)
                 }
 
                 views.setImageViewBitmap(

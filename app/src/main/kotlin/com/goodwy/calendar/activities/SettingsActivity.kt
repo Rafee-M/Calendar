@@ -111,9 +111,9 @@ class SettingsActivity : SimpleActivity() {
         }
         if (isRuStoreInstalled()) {
             //RuStore
-            ruStoreHelper = RuStoreHelper(this)
+            ruStoreHelper = RuStoreHelper()
 
-            ruStoreHelper!!.checkPurchasesAvailability()
+            ruStoreHelper!!.checkPurchasesAvailability(this)
 
             lifecycleScope.launch {
                 ruStoreHelper!!.eventStart
@@ -601,10 +601,10 @@ class SettingsActivity : SimpleActivity() {
     private fun setupHighlightWeekendsColor() = binding.apply {
         settingsHighlightWeekendsColor.setFillWithStroke(config.highlightWeekendsColor, getProperBackgroundColor())
         settingsHighlightWeekendsColorHolder.setOnClickListener {
-            ColorPickerDialog(this@SettingsActivity, config.highlightWeekendsColor,addDefaultColorButton = true,
+            ColorPickerDialog(this@SettingsActivity, config.highlightWeekendsColor, addDefaultColorButton = true,
                 colorDefault = resources.getColor(R.color.red_text)
-            ) { wasPositivePressed, color, _ ->
-                if (wasPositivePressed) {
+            ) { wasPositivePressed, color, wasDefaultPressed ->
+                if (wasPositivePressed || wasDefaultPressed) {
                     config.highlightWeekendsColor = color
                     settingsHighlightWeekendsColor.setFillWithStroke(color, getProperBackgroundColor())
                 }

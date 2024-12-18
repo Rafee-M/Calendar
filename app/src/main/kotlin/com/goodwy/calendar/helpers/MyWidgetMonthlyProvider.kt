@@ -233,6 +233,7 @@ class MyWidgetMonthlyProvider : AppWidgetProvider() {
                 val opts = appWidgetManager.getAppWidgetOptions(it)
                 setHorizontalVisibility(context, opts, views)
                 views.setVisibleIf(R.id.widget_name, context.config.showWidgetName)
+                views.setTextColor(R.id.widget_name, context.config.widgetLabelColor)
 
                 try {
                     appWidgetManager.updateAppWidget(it, views)

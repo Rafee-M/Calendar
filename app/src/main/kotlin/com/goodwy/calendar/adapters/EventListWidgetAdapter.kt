@@ -74,8 +74,9 @@ class EventListWidgetAdapter(val context: Context, val intent: Intent) : RemoteV
 
     private fun setupListEvent(remoteView: RemoteViews, item: ListEvent) {
         remoteView.apply {
-            applyColorFilter(R.id.event_item_color_background, item.color.adjustAlpha(0.3f))
-            applyColorFilter(R.id.event_item_color_bar, item.color)
+            val itemColor = item.color ?: if (context.config.widgetBgColor == Color.WHITE) Color.BLACK else Color.WHITE
+            applyColorFilter(R.id.event_item_color_background, itemColor.adjustAlpha(0.3f))
+            applyColorFilter(R.id.event_item_color_bar, itemColor)
             setText(R.id.event_item_title, item.title)
 
             var timeText = if (item.isAllDay) allDayString else Formatter.getTimeFromTS(context, item.startTS)
@@ -100,8 +101,8 @@ class EventListWidgetAdapter(val context: Context, val intent: Intent) : RemoteV
                 setText(R.id.event_item_time, "$timeText\n$descriptionText")
             }
 
-            var textColor = if (context.config.widgetBgColor.getContrastColor() == Color.WHITE) item.color.lightenColor(20)
-                            else item.color.darkenColor(36)
+            var textColor = if (context.config.widgetBgColor.getContrastColor() == Color.WHITE) itemColor.lightenColor(20)
+                            else itemColor.darkenColor(36)
             if (item.isTask && item.isTaskCompleted && dimCompletedTasks || dimPastEvents && item.isPastEvent && !item.isTask) {
                 textColor = textColor.adjustAlpha(MEDIUM_ALPHA)
             }
@@ -114,7 +115,7 @@ class EventListWidgetAdapter(val context: Context, val intent: Intent) : RemoteV
 
             setVisibleIf(R.id.event_item_color_bar, !item.isTask)
             setVisibleIf(R.id.event_item_task_image, item.isTask)
-            applyColorFilter(R.id.event_item_task_image, item.color)
+            applyColorFilter(R.id.event_item_task_image, itemColor)
 
             if (item.isTask) {
                 setViewPadding(R.id.event_item_title, 0, 0, smallMargin, 0)

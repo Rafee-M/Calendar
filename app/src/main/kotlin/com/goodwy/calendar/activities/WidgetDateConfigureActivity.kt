@@ -21,6 +21,7 @@ class WidgetDateConfigureActivity : SimpleActivity() {
     private var mBgColor = 0
     private var mTextColor = 0
     private var mSecondTextColor = 0
+    private var mLabelColor = 0
 
     private val binding by viewBinding(WidgetConfigDateBinding::inflate)
 
@@ -47,6 +48,7 @@ class WidgetDateConfigureActivity : SimpleActivity() {
             configBgColorHolder.setOnClickListener { pickBackgroundColor() }
             configTextColorHolder.setOnClickListener { pickTextColor() }
             configSecondaryTextColorHolder.setOnClickListener { pickTextColor(true) }
+            configWidgetNameTextColorHolder.setOnClickListener { pickLabelColor() }
             configBgSeekbar.setColors(mTextColor, primaryColor, primaryColor)
             widgetDateLabel.text = Formatter.getTodayDayNumber()
             widgetDayWeekLabel.text = Formatter.getCurrentMonthShort()
@@ -81,6 +83,7 @@ class WidgetDateConfigureActivity : SimpleActivity() {
             mTextColor = resources.getColor(com.goodwy.commons.R.color.you_primary_color, theme)
         }
         mSecondTextColor = config.widgetSecondTextColor
+        mLabelColor = config.widgetLabelColor
 
         updateTextColor()
     }
@@ -102,6 +105,7 @@ class WidgetDateConfigureActivity : SimpleActivity() {
             widgetBgColor = mBgColor
             widgetTextColor = mTextColor
             widgetSecondTextColor = mSecondTextColor
+            widgetLabelColor = mLabelColor
         }
     }
 
@@ -109,8 +113,8 @@ class WidgetDateConfigureActivity : SimpleActivity() {
         ColorPickerDialog(this, mBgColorWithoutTransparency,
             addDefaultColorButton = true,
             colorDefault = resources.getColor(com.goodwy.commons.R.color.default_widget_bg_color)
-        ) { wasPositivePressed, color, _ ->
-            if (wasPositivePressed) {
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
                 mBgColorWithoutTransparency = color
                 updateBackgroundColor()
             }
@@ -122,14 +126,27 @@ class WidgetDateConfigureActivity : SimpleActivity() {
             addDefaultColorButton = true,
             colorDefault = if (secondary) resources.getColor(com.goodwy.commons.R.color.theme_light_text_color)
                             else resources.getColor(com.goodwy.commons.R.color.default_widget_text_color)
-        ) { wasPositivePressed, color, _ ->
-            if (wasPositivePressed) {
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
                 if (secondary) {
                     mSecondTextColor = color
                 } else {
                     mTextColor = color
                 }
                 updateTextColor()
+            }
+        }
+    }
+
+    private fun pickLabelColor() {
+        ColorPickerDialog(this, mLabelColor,
+            addDefaultColorButton = true,
+            colorDefault = resources.getColor(com.goodwy.commons.R.color.default_widget_label_color)
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
+                mLabelColor = color
+                updateTextColor()
+                handleWidgetNameDisplay()
             }
         }
     }
@@ -145,9 +162,11 @@ class WidgetDateConfigureActivity : SimpleActivity() {
         binding.apply {
             configTextColor.setFillWithStroke(mTextColor, mTextColor)
             configSecondaryTextColor.setFillWithStroke(mSecondTextColor, mSecondTextColor)
+            configWidgetNameTextColor.setFillWithStroke(mLabelColor, mLabelColor)
             widgetDateLabel.setTextColor(mSecondTextColor)
             widgetDayWeekLabel.setTextColor(mTextColor)
             widgetMonthLabel.setTextColor(mSecondTextColor)
+            widgetName.setTextColor(mLabelColor)
             configSave.setTextColor(getProperPrimaryColor().getContrastColor())
         }
     }
@@ -164,5 +183,6 @@ class WidgetDateConfigureActivity : SimpleActivity() {
     private fun handleWidgetNameDisplay() {
         val showName = binding.configWidgetName.isChecked
         binding.widgetName.beVisibleIf(showName)
+        binding.configWidgetNameTextColorHolder.beVisibleIf(showName)
     }
 }

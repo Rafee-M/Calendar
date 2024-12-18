@@ -923,8 +923,10 @@ class EventActivity : SimpleActivity() {
         }
 
         runOnUiThread {
-            ColorPickerDialog(activity = this, color = currentColor, addDefaultColorButton = true) { wasPositivePressed, newColor, _ ->
-                if (wasPositivePressed) {
+            ColorPickerDialog(activity = this, color = currentColor, addDefaultColorButton = true,
+                colorDefault = eventType.color
+            ) { wasPositivePressed, newColor, wasDefaultPressed ->
+                if (wasPositivePressed || wasDefaultPressed) {
                     gotNewEventColor(newColor, currentColor, eventType.color)
                 }
             }

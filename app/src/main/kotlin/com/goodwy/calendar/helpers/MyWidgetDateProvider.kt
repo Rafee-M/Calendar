@@ -24,6 +24,7 @@ class MyWidgetDateProvider : AppWidgetProvider() {
                 setTextColor(R.id.widget_date, context.config.widgetSecondTextColor)
                 setTextColor(R.id.widget_day_week, context.config.widgetTextColor)
                 setTextColor(R.id.widget_month, context.config.widgetSecondTextColor)
+                setTextColor(R.id.widget_name, context.config.widgetLabelColor)
                 setVisibleIf(R.id.widget_name, context.config.showWidgetName)
 
                 setupAppOpenIntent(context, this)

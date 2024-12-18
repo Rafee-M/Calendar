@@ -13,8 +13,7 @@ swiperefreshlayout = "1.1.0"
 #Room
 room = "2.6.1"
 #Goodwy
-right-commons = "3c8f3a8948"
-rustore = "5.1.1"
+right-commons = "754ab28fcf"
 rxAnimation = "2.1.1"
 #Gradle
 gradlePlugins-agp = "8.7.2"
@@ -26,8 +25,8 @@ app-build-javaVersion = "VERSION_17"
 app-build-kotlinJVMTarget = "17"
 #versioning
 app-version-appId = "com.goodwy.calendar"
-app-version-versionCode = "600"
-app-version-versionName = "6.0.0"
+app-version-versionCode = "601"
+app-version-versionName = "6.0.1"
 [libraries]
 #Android X
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -40,7 +39,6 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 #Goodwy
 goodwy-commons = { module = "com.github.Goodwy:Goodwy-Commons", version.ref = "right-commons" }
-rustore-client = { module = "ru.rustore.sdk:billingclient", version.ref = "rustore" }
 rx-animation = { module = "com.mikhaellopez:rxanimation", version.ref = "rxAnimation" }
 [bundles]
 room = [

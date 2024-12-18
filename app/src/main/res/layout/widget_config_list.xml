@@ -216,11 +216,32 @@
                     app:switchPadding="@dimen/bigger_margin"/>
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/configWidgetNameTextColorHolder"
+                style="@style/SettingsHolderStyle"
+                android:layout_below="@+id/configWidgetNameHolder">
+
+                <com.goodwy.commons.views.MyTextView
+                    android:id="@+id/configWidgetNameTextColorLabel"
+                    style="@style/SettingsTextLabelStyle"
+                    android:text="@string/text_color"/>
+
+                <ImageView
+                    android:id="@+id/configWidgetNameTextColor"
+                    android:layout_width="@dimen/color_sample_size"
+                    android:layout_height="@dimen/color_sample_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/settings_margin"
+                    android:clickable="false"
+                    android:contentDescription="@null" />
+            </RelativeLayout>
+
             <Button
                 android:id="@+id/config_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/configWidgetNameHolder"
+                android:layout_below="@+id/configWidgetNameTextColorHolder"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="@dimen/smaller_margin"
                 android:background="@drawable/button_background_12dp"

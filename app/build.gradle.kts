@@ -135,6 +135,5 @@ dependencies {
 
     //Goodwy
     implementation(libs.goodwy.commons)
-    implementation(libs.rustore.client)
     implementation(libs.rx.animation)
 }

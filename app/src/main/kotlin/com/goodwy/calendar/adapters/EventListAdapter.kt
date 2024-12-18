@@ -147,7 +147,7 @@ class EventListAdapter(
     private fun setupListEvent(view: View, listEvent: ListEvent) {
         if (widgetView) {
             EventListItemWidgetBinding.bind(view).apply {
-                var newTextColor = listEvent.color
+                var newTextColor = listEvent.color ?: if (activity.config.widgetBgColor == Color.WHITE) Color.BLACK else Color.WHITE
                 eventItemColorBackground.applyColorFilter(newTextColor.adjustAlpha(0.1f))
                 eventItemColorBar.applyColorFilter(newTextColor)
 
@@ -223,7 +223,7 @@ class EventListAdapter(
 
                 eventItemDescription.text = if (replaceDescription) listEvent.location else listEvent.description.replace("\n", " ")
                 eventItemDescription.beVisibleIf(displayDescription && eventItemDescription.text.isNotEmpty())
-                eventItemColorBar.background.applyColorFilter(listEvent.color)
+                eventItemColorBar.background.applyColorFilter(listEvent.color ?: if (activity.getProperBackgroundColor() == Color.WHITE) Color.BLACK else Color.WHITE)
 
                 var newTextColor = textColor
                 if (listEvent.isAllDay || listEvent.startTS <= now && listEvent.endTS <= now) {

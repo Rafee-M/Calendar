@@ -2,4 +2,11 @@
 <resources>
     <string name="package_name">com.goodwy.calendar</string>
     <string name="app_name_g">Right Calendar</string>
+
+    <!-- Release notes -->
+    <string name="release_601">
+        Added option to select the text label color for the widget\n
+        Fixed date and time selection dialogs\n
+        Improved performance, bug fixes
+    </string>
 </resources>

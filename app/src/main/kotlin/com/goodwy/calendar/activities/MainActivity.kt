@@ -1343,6 +1343,7 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
 
     private fun checkWhatsNewDialog() {
         arrayListOf<Release>().apply {
+            add(Release(601, R.string.release_601))
             checkWhatsNew(this, com.goodwy.calendar.BuildConfig.VERSION_CODE)
         }
     }

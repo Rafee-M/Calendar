@@ -35,6 +35,7 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
     private var mBgColor = 0
     private var mTextColor = 0
     private var mSecondTextColor = 0
+    private var mLabelColor = 0
 
     private val binding by viewBinding(WidgetConfigMonthlyBinding::inflate)
 
@@ -61,6 +62,7 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
             configBgColorHolder.setOnClickListener { pickBackgroundColor() }
             configTextColorHolder.setOnClickListener { pickTextColor() }
             configSecondaryTextColorHolder.setOnClickListener { pickTextColor(true) }
+            configWidgetNameTextColorHolder.setOnClickListener { pickLabelColor() }
             configBgSeekbar.setColors(mTextColor, primaryColor, primaryColor)
 
             configWidgetName.isChecked = config.showWidgetName
@@ -92,6 +94,7 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
             mTextColor = resources.getColor(com.goodwy.commons.R.color.you_primary_color, theme)
         }
         mSecondTextColor = config.widgetSecondTextColor
+        mLabelColor = config.widgetLabelColor
 
         updateTextColor()
 
@@ -115,6 +118,7 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
             widgetBgColor = mBgColor
             widgetTextColor = mTextColor
             widgetSecondTextColor = mSecondTextColor
+            widgetLabelColor = mLabelColor
         }
     }
 
@@ -122,8 +126,8 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
         ColorPickerDialog(this, mBgColorWithoutTransparency,
             addDefaultColorButton = true,
             colorDefault = resources.getColor(com.goodwy.commons.R.color.default_widget_bg_color)
-        ) { wasPositivePressed, color, _ ->
-            if (wasPositivePressed) {
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
                 mBgColorWithoutTransparency = color
                 updateBackgroundColor()
             }
@@ -135,8 +139,8 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
             addDefaultColorButton = true,
             colorDefault = if (secondary) resources.getColor(com.goodwy.commons.R.color.theme_light_text_color)
             else resources.getColor(com.goodwy.commons.R.color.default_widget_text_color)
-        ) { wasPositivePressed, color, _ ->
-            if (wasPositivePressed) {
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
                 if (secondary) {
                     mSecondTextColor = color
                 } else {
@@ -144,6 +148,19 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
                 }
                 updateTextColor()
                 updateDays()
+            }
+        }
+    }
+
+    private fun pickLabelColor() {
+        ColorPickerDialog(this, mLabelColor,
+            addDefaultColorButton = true,
+            colorDefault = resources.getColor(com.goodwy.commons.R.color.default_widget_label_color)
+        ) { wasPositivePressed, color, wasDefaultPressed ->
+            if (wasPositivePressed || wasDefaultPressed) {
+                mLabelColor = color
+                updateTextColor()
+                handleWidgetNameDisplay()
             }
         }
     }
@@ -162,7 +179,9 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
         binding.configCalendar.topNewEvent.applyColorFilter(mTextColor)
         binding.configTextColor.setFillWithStroke(mTextColor, mTextColor)
         binding.configSecondaryTextColor.setFillWithStroke(mSecondTextColor, mSecondTextColor)
+        binding.configWidgetNameTextColor.setFillWithStroke(mLabelColor, mLabelColor)
         binding.configSave.setTextColor(getProperPrimaryColor().getContrastColor())
+        binding.configCalendar.widgetName.setTextColor(mLabelColor)
         updateLabels()
     }
 
@@ -264,5 +283,6 @@ class WidgetMonthlyConfigureActivity : SimpleActivity(), MonthlyCalendar {
     private fun handleWidgetNameDisplay() {
         val showName = binding.configWidgetName.isChecked
         binding.configCalendar.widgetName.beVisibleIf(showName)
+        binding.configWidgetNameTextColorHolder.beVisibleIf(showName)
     }
 }

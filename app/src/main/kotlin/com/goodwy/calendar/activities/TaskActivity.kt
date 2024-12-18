@@ -821,9 +821,10 @@ class TaskActivity : SimpleActivity() {
             }
 
             runOnUiThread {
-                ColorPickerDialog(activity = this, color = currentColor, addDefaultColorButton = true
-                ) { wasPositivePressed, newColor, _ ->
-                    if (wasPositivePressed) {
+                ColorPickerDialog(activity = this, color = currentColor, addDefaultColorButton = true,
+                    colorDefault = eventType.color
+                ) { wasPositivePressed, newColor, wasDefaultPressed ->
+                    if (wasPositivePressed || wasDefaultPressed) {
                         if (newColor != currentColor) {
                             mEventColor = newColor
                             updateTaskColorInfo(defaultColor = eventType.color)

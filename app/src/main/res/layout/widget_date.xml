@@ -110,7 +110,7 @@
         android:includeFontPadding="false"
         android:lines="1"
         android:paddingTop="@dimen/small_margin"
-        android:paddingHorizontal="@dimen/tiny_margin"
+        android:paddingHorizontal="@dimen/small_margin"
         android:textSize="13sp"
         android:textColor="@color/white"
         android:text="@string/app_launcher_name" />
