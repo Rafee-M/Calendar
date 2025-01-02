@@ -1344,6 +1344,7 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
     private fun checkWhatsNewDialog() {
         arrayListOf<Release>().apply {
             add(Release(601, R.string.release_601))
+            add(Release(610, R.string.release_610))
             checkWhatsNew(this, com.goodwy.calendar.BuildConfig.VERSION_CODE)
         }
     }
