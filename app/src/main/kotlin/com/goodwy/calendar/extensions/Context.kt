@@ -46,11 +46,14 @@ import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeConstants
+import org.joda.time.Days
 import org.joda.time.LocalDate
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import androidx.core.net.toUri
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 val Context.eventsDB: EventsDao get() = EventsDatabase.getInstance(applicationContext).EventsDao()
@@ -396,7 +399,7 @@ fun Context.getNotification(pendingIntent: PendingIntent, event: Event, content:
             enableLights(true)
             lightColor = event.color
             enableVibration(config.vibrateOnReminder)
-            setSound(Uri.parse(soundUri), audioAttributes)
+            setSound(soundUri.toUri(), audioAttributes)
             try {
                 notificationManager.createNotificationChannel(this)
             } catch (e: Exception) {
@@ -419,7 +422,7 @@ fun Context.getNotification(pendingIntent: PendingIntent, event: Event, content:
         .setDefaults(Notification.DEFAULT_LIGHTS)
         .setCategory(Notification.CATEGORY_EVENT)
         .setAutoCancel(true)
-        .setSound(Uri.parse(soundUri), config.reminderAudioStream)
+        .setSound(soundUri.toUri(), config.reminderAudioStream)
         .setChannelId(channelId)
         .apply {
             if (event.isTask() && !event.isTaskCompleted()) {
@@ -475,6 +478,7 @@ private fun getSnoozePendingIntent(context: Context, event: Event): PendingInten
 private fun getMarkCompletedPendingIntent(context: Context, task: Event): PendingIntent {
     val intent = Intent(context, MarkCompletedService::class.java).setAction(ACTION_MARK_COMPLETED)
     intent.putExtra(EVENT_ID, task.id)
+    intent.putExtra(EVENT_OCCURRENCE_TS, task.startTS)
     return PendingIntent.getService(context, task.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 }
 
@@ -575,6 +579,7 @@ fun Context.scheduleCalDAVSync(activate: Boolean) {
     }
 }
 
+@SuppressLint("UseCompatLoadingForDrawables")
 fun Context.addDayEvents(day: DayMonthly, linearLayout: LinearLayout, res: Resources, dividerMargin: Int) {
     val eventLayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
@@ -765,38 +770,32 @@ fun Context.getFirstDayOfWeek(date: DateTime): String {
 }
 
 fun Context.getFirstDayOfWeekDt(date: DateTime): DateTime {
-    val currentDate = date.withTimeAtStartOfDay()
-    if (config.startWeekWithCurrentDay) {
-        return currentDate
-    } else {
+    var today = date.withTimeAtStartOfDay()
+    var currentDate = today
+    if (!config.startWeekWithCurrentDay) {
+
         val firstDayOfWeek = config.firstDayOfWeek
         val currentDayOfWeek = currentDate.dayOfWeek
-        return if (currentDayOfWeek == firstDayOfWeek) {
-            currentDate
-        } else {
+
+        if (currentDayOfWeek != firstDayOfWeek) {
+
             // Joda-time's weeks always starts on Monday but user preferred firstDayOfWeek could be any week day
             if (firstDayOfWeek < currentDayOfWeek) {
-                currentDate.withDayOfWeek(firstDayOfWeek)
+                currentDate = currentDate.withDayOfWeek(firstDayOfWeek)
             } else {
-                currentDate.minusWeeks(1).withDayOfWeek(firstDayOfWeek)
+                currentDate = currentDate.minusWeeks(1).withDayOfWeek(firstDayOfWeek)
+            }
+
+            // moving start of the week according to the weeklyViewDays setting
+            if (config.weeklyViewDays < 7) {
+                val diff = Days.daysBetween(currentDate, today).days.absoluteValue
+                // integer division first to get a starting day of the screen
+                val daysToMove = (diff / config.weeklyViewDays) * config.weeklyViewDays
+                currentDate = currentDate.plusDays(daysToMove)
             }
         }
     }
-}
-
-fun Context.getDayOfWeekString(dayOfWeek: Int): String {
-    val dayOfWeekResId = when (dayOfWeek) {
-        DateTimeConstants.MONDAY -> com.goodwy.commons.R.string.monday
-        DateTimeConstants.TUESDAY -> com.goodwy.commons.R.string.tuesday
-        DateTimeConstants.WEDNESDAY -> com.goodwy.commons.R.string.wednesday
-        DateTimeConstants.THURSDAY -> com.goodwy.commons.R.string.thursday
-        DateTimeConstants.FRIDAY -> com.goodwy.commons.R.string.friday
-        DateTimeConstants.SATURDAY -> com.goodwy.commons.R.string.saturday
-        DateTimeConstants.SUNDAY -> com.goodwy.commons.R.string.sunday
-        else -> throw IllegalArgumentException("Invalid day: $dayOfWeek")
-    }
-
-    return getString(dayOfWeekResId)
+    return currentDate
 }
 
 // format day bits to strings like "Mon, Tue, Wed"
@@ -933,6 +932,20 @@ fun Context.setExactAlarm(triggerAtMillis: Long, operation: PendingIntent, type:
         }
     } catch (e: Exception) {
         showErrorToast(e)
+    }
+}
+
+/**
+ * Returns the width of the week number text.
+ */
+fun Context.getWeekNumberWidth(): Int {
+    return if (config.showWeekNumbers) {
+        val factor = 2.5f
+        (resources.getDimensionPixelSize(
+            com.goodwy.commons.R.dimen.smaller_text_size
+        ) * factor).roundToInt()
+    } else {
+        0
     }
 }
 

@@ -8,9 +8,9 @@ import com.goodwy.calendar.databinding.DialogRepeatLimitTypePickerBinding
 import com.goodwy.calendar.extensions.config
 import com.goodwy.calendar.extensions.seconds
 import com.goodwy.calendar.helpers.Formatter
-import com.goodwy.calendar.helpers.getJavaDayOfWeekFromJoda
 import com.goodwy.calendar.helpers.getNowSeconds
 import com.goodwy.commons.extensions.*
+import com.goodwy.commons.helpers.getJavaDayOfWeekFromISO
 import org.joda.time.DateTime
 
 class RepeatLimitTypePickerDialog(val activity: Activity, var repeatLimit: Long, val startTS: Long, val callback: (repeatLimit: Long) -> Unit) {
@@ -93,7 +93,7 @@ class RepeatLimitTypePickerDialog(val activity: Activity, var repeatLimit: Long,
             repeatLimitDateTime.monthOfYear - 1, repeatLimitDateTime.dayOfMonth
         )
 
-        datePicker.datePicker.firstDayOfWeek = getJavaDayOfWeekFromJoda(activity.config.firstDayOfWeek)
+        datePicker.datePicker.firstDayOfWeek = getJavaDayOfWeekFromISO(activity.config.firstDayOfWeek)
         datePicker.show()
     }
 

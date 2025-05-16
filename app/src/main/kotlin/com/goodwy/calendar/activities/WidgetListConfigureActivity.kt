@@ -57,9 +57,9 @@ class WidgetListConfigureActivity : SimpleActivity() {
         }
 
         binding.apply {
-            EventListAdapter(this@WidgetListConfigureActivity, getListItems(), false, true, null, configEventsList) {}.apply {
+            EventListAdapter(this@WidgetListConfigureActivity, getListItems(), false, true, null, configWidgetPreview.configEventsList) {}.apply {
                 updateTextColor(mSecondTextColor)
-                configEventsList.adapter = this
+                configWidgetPreview.configEventsList.adapter = this
             }
 
             updateTextColors(configHolder)
@@ -87,6 +87,16 @@ class WidgetListConfigureActivity : SimpleActivity() {
         }
 
         updateSelectedPeriod(config.lastUsedEventSpan)
+
+        binding.showWidgetHeader.isChecked = config.lastUsedShowListWidgetHeader
+        binding.configTextColorHolder.beVisibleIf(config.lastUsedShowListWidgetHeader)
+        binding.configWidgetPreview.widgetHeaderInclude.widgetHeader.beVisibleIf(config.lastUsedShowListWidgetHeader)
+
+        binding.showWidgetHeaderHolder.setOnClickListener {
+            binding.showWidgetHeader.toggle()
+            binding.configTextColorHolder.beVisibleIf(binding.showWidgetHeader.isChecked)
+            binding.configWidgetPreview.widgetHeaderInclude.widgetHeader.beVisibleIf(binding.showWidgetHeader.isChecked)
+        }
     }
 
     private fun initVariables() {
@@ -115,7 +125,7 @@ class WidgetListConfigureActivity : SimpleActivity() {
     }
 
     private fun saveConfig() {
-        val widget = Widget(null, mWidgetId, mSelectedPeriodOption)
+        val widget = Widget(null, mWidgetId, mSelectedPeriodOption, binding.showWidgetHeader.isChecked)
         ensureBackgroundThread {
             widgetsDB.insertOrUpdate(widget)
         }
@@ -125,6 +135,7 @@ class WidgetListConfigureActivity : SimpleActivity() {
         config.showWidgetName = binding.configWidgetName.isChecked
 
         config.lastUsedEventSpan = mSelectedPeriodOption
+        config.lastUsedShowListWidgetHeader = binding.showWidgetHeader.isChecked
 
         Intent().apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetId)
@@ -253,20 +264,21 @@ class WidgetListConfigureActivity : SimpleActivity() {
     }
 
     private fun updateTextColor() {
-        (binding.configEventsList.adapter as? EventListAdapter)?.updateTextColor(mSecondTextColor)
+        binding.configWidgetPreview.widgetHeaderInclude.widgetEventListToday.setTextColor(mTextColor)
+        binding.configWidgetPreview.widgetHeaderInclude.widgetEventGoToToday.setColorFilter(mTextColor)
+        binding.configWidgetPreview.widgetHeaderInclude.widgetEventNewEvent.setColorFilter(mTextColor)
+        (binding.configWidgetPreview.configEventsList.adapter as? EventListAdapter)?.updateTextColor(mSecondTextColor)
+
         binding.configTextColor.setFillWithStroke(mTextColor, mTextColor)
         binding.configSecondaryTextColor.setFillWithStroke(mSecondTextColor, mSecondTextColor)
         binding.configWidgetNameTextColor.setFillWithStroke(mLabelColor, mLabelColor)
         binding.configSave.setTextColor(getProperPrimaryColor().getContrastColor())
-        binding.widgetEventListToday.setTextColor(mTextColor)
-        binding.widgetEventGoToToday.setColorFilter(mTextColor)
-        binding.widgetEventNewEvent.setColorFilter(mTextColor)
         binding.widgetName.setTextColor(mLabelColor)
     }
 
     private fun updateBackgroundColor() {
         mBgColor = mBgColorWithoutTransparency.adjustAlpha(mBgAlpha)
-        binding.configListWrapper.background.applyColorFilter(mBgColor)
+        binding.configWidgetPreview.widgetConfigEventListBackground.setColorFilter(mBgColor)
         binding.configBgColor.setFillWithStroke(mBgColor, mBgColor)
         binding.configSave.backgroundTintList = ColorStateList.valueOf(getProperPrimaryColor())
     }

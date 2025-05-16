@@ -1,6 +1,5 @@
 package com.goodwy.calendar.adapters
 
-import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -9,10 +8,16 @@ import com.goodwy.calendar.activities.SimpleActivity
 import com.goodwy.calendar.databinding.ItemAutocompleteTitleSubtitleBinding
 import com.goodwy.calendar.models.Attendee
 import com.goodwy.commons.extensions.beVisibleIf
+import com.goodwy.commons.extensions.getProperTextColor
+import com.goodwy.commons.extensions.isDynamicTheme
 import com.goodwy.commons.extensions.normalizeString
 import com.goodwy.commons.helpers.SimpleContactsHelper
+import androidx.core.graphics.drawable.toDrawable
 
-class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: ArrayList<Attendee>) : ArrayAdapter<Attendee>(activity, 0, attendees) {
+class AutoCompleteTextViewAdapter(
+    val activity: SimpleActivity,
+    val attendees: ArrayList<Attendee>,
+) : ArrayAdapter<Attendee>(activity, 0, attendees) {
     var resultList = ArrayList<Attendee>()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -20,7 +25,17 @@ class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: A
         val attendeeHasName = attendee.name.isNotEmpty()
         var listItem = convertView
         if (listItem == null || listItem.tag != attendeeHasName) {
-            listItem = ItemAutocompleteTitleSubtitleBinding.inflate(activity.layoutInflater, parent, false).root
+            listItem = ItemAutocompleteTitleSubtitleBinding.inflate(
+                activity.layoutInflater, parent, false
+            ).apply {
+                // TODO: Dark text color is set for dynamic theme only because light themes are
+                //  configured with dark overflow menu background for some reason ¯\_(ツ)_/¯
+                if (activity.isDynamicTheme()) {
+                    val textColor = activity.getProperTextColor()
+                    itemAutocompleteTitle.setTextColor(textColor)
+                    itemAutocompleteSubtitle.setTextColor(textColor)
+                }
+            }.root
         }
 
         val nameToUse = when {
@@ -29,7 +44,6 @@ class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: A
             else -> "A"
         }
 
-        val placeholder = BitmapDrawable(activity.resources, SimpleContactsHelper(context).getContactLetterIcon(nameToUse))
         listItem.tag = attendeeHasName
         ItemAutocompleteTitleSubtitleBinding.bind(listItem).apply {
             itemAutocompleteTitle.text = if (attendeeHasName) {
@@ -40,6 +54,8 @@ class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: A
 
             itemAutocompleteSubtitle.text = attendee.email
             itemAutocompleteSubtitle.beVisibleIf(attendeeHasName)
+
+            val placeholder = SimpleContactsHelper(context).getContactLetterIcon(nameToUse).toDrawable(activity.resources)
             attendee.updateImage(context, itemAutocompleteImage, placeholder)
         }
 
@@ -53,7 +69,10 @@ class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: A
                 val results = mutableListOf<Attendee>()
                 val searchString = constraint.toString().normalizeString()
                 attendees.forEach {
-                    if (it.email.contains(searchString, true) || it.name.contains(searchString, true)) {
+                    if (
+                        it.email.contains(searchString, true) ||
+                        it.name.contains(searchString, true)
+                    ) {
                         results.add(it)
                     }
                 }
@@ -83,7 +102,9 @@ class AutoCompleteTextViewAdapter(val activity: SimpleActivity, val attendees: A
             }
         }
 
-        override fun convertResultToString(resultValue: Any?) = (resultValue as? Attendee)?.getPublicName()
+        override fun convertResultToString(resultValue: Any?): String? {
+            return (resultValue as? Attendee)?.getPublicName()
+        }
     }
 
     override fun getItem(index: Int) = resultList[index]

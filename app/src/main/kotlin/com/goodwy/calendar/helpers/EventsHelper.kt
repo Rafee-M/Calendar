@@ -18,6 +18,7 @@ class EventsHelper(val context: Context) {
     private val config = context.config
     private val eventsDB = context.eventsDB
     private val eventTypesDB = context.eventTypesDB
+    private val completedTasksDB = context.completedTasksDB
 
     fun getEventTypes(activity: Activity, showWritableOnly: Boolean, callback: (eventTypes: ArrayList<EventType>) -> Unit) {
         ensureBackgroundThread {
@@ -315,6 +316,10 @@ class EventsHelper(val context: Context) {
                 context.calDAVHelper.updateCalDAVEvent(event)
             }
         }
+
+        if (event.isTask()) {
+            completedTasksDB.deleteTaskFutureOccurrences(eventId, occurrenceTS)
+        }
     }
 
     fun doEventTypesContainEventsOrTasks(eventTypeIds: ArrayList<Long>, callback: (contain: Boolean) -> Unit) {
@@ -334,6 +339,10 @@ class EventsHelper(val context: Context) {
 
             if (addToCalDAV && config.caldavSync) {
                 context.calDAVHelper.insertEventRepeatException(parentEvent, occurrenceTS)
+            }
+
+            if (parentEvent.isTask()) {
+                completedTasksDB.deleteTaskWithIdAndTs(parentEventId, occurrenceTS)
             }
         }
     }
@@ -402,10 +411,7 @@ class EventsHelper(val context: Context) {
             .filterNot { it.repetitionExceptions.contains(Formatter.getDayCodeFromTS(it.startTS)) }
             .toMutableList() as ArrayList<Event>
 
-        val eventTypeColors = LongSparseArray<Int>()
-        context.eventTypesDB.getEventTypes().forEach {
-            eventTypeColors.put(it.id!!, it.color)
-        }
+        val eventTypeColors = getEventTypeColors()
 
         events.forEach {
             if (it.isTask()) {
@@ -598,7 +604,7 @@ class EventsHelper(val context: Context) {
     }
 
     fun updateIsTaskCompleted(event: Event) {
-        val task = context.completedTasksDB.getTaskWithIdAndTs(event.id!!, startTs = event.startTS)
+        val task = completedTasksDB.getTaskWithIdAndTs(event.id!!, startTs = event.startTS)
         event.flags = task?.flags ?: event.flags
     }
 
@@ -639,5 +645,14 @@ class EventsHelper(val context: Context) {
 
         events = events.distinctBy { it.id } as ArrayList<Event>
         return events
+    }
+
+    fun getEventTypeColors(): LongSparseArray<Int> {
+        val eventTypeColors = LongSparseArray<Int>()
+        context.eventTypesDB.getEventTypes().forEach {
+            eventTypeColors.put(it.id!!, it.color)
+        }
+
+        return eventTypeColors
     }
 }

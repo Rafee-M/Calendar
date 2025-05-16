@@ -8,6 +8,7 @@ import com.goodwy.calendar.R
 import com.goodwy.calendar.databinding.MonthViewBackgroundBinding
 import com.goodwy.calendar.databinding.MonthViewBinding
 import com.goodwy.calendar.extensions.config
+import com.goodwy.calendar.extensions.getWeekNumberWidth
 import com.goodwy.calendar.extensions.launchNewEventIntent
 import com.goodwy.calendar.extensions.launchNewTaskIntent
 import com.goodwy.calendar.helpers.*
@@ -103,11 +104,7 @@ class MonthViewWrapper(context: Context, attrs: AttributeSet, defStyle: Int) : F
     }
 
     private fun setupHorizontalOffset() {
-        horizontalOffset = if (context.config.showWeekNumbers) {
-            resources.getDimensionPixelSize(com.goodwy.commons.R.dimen.smaller_text_size) * 2
-        } else {
-            0
-        }
+        horizontalOffset = context.getWeekNumberWidth()
     }
 
     private fun measureSizes() {

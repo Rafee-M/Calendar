@@ -677,7 +677,7 @@
                             android:layout_width="0dp"
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
-                            android:text="@string/availability"
+                            android:text="@string/status"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/event_status"
                             app:layout_constraintTop_toTopOf="parent"
@@ -708,7 +708,54 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <include
-                        android:id="@+id/vent_availability_divider"
+                        layout="@layout/divider_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/settings_margin"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/event_access_level_holder"
+                        style="@style/SettingsHolderStyle"
+                        android:paddingEnd="@dimen/small_margin"
+                        tools:ignore="RtlSymmetry">
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_access_level_label"
+                            style="@style/SettingsTextLabelStyle"
+                            android:layout_width="0dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/access_level"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/event_access_level"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <com.goodwy.commons.views.MyTextView
+                            android:id="@+id/event_access_level"
+                            style="@style/SettingsTextValueStyle"
+                            android:maxWidth="@dimen/settings_value_width_long"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:paddingHorizontal="@dimen/small_margin"
+                            android:text="@string/access_level_public"
+                            app:layout_constraintEnd_toStartOf="@+id/event_access_level_image"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/event_access_level_image"
+                            style="@style/SettingsChevronStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="@dimen/settings_margin"
+                            android:src="@drawable/ic_lock_open"
+                            android:contentDescription="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
                         layout="@layout/divider_padding"
                         android:layout_width="match_parent"
                         android:layout_height="1px"

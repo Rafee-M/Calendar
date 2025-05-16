@@ -3,7 +3,6 @@ package com.goodwy.calendar.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ShortcutInfo
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -19,16 +18,14 @@ import com.goodwy.calendar.adapters.QuickFilterEventTypeAdapter
 import com.goodwy.calendar.databases.EventsDatabase
 import com.goodwy.calendar.databinding.ActivityMainBinding
 import com.goodwy.calendar.dialogs.SelectEventTypesDialog
+import com.goodwy.calendar.dialogs.SelectHolidayTypesDialog
 import com.goodwy.calendar.dialogs.SetRemindersDialog
 import com.goodwy.calendar.extensions.*
 import com.goodwy.calendar.fragments.*
 import com.goodwy.calendar.helpers.*
 import com.goodwy.calendar.helpers.IcsImporter.ImportResult
 import com.goodwy.calendar.jobs.CalDAVUpdateListener
-import com.goodwy.calendar.models.Event
-import com.goodwy.calendar.models.ListEvent
-import com.goodwy.calendar.models.ListItem
-import com.goodwy.calendar.models.ListSectionDay
+import com.goodwy.calendar.models.*
 import com.goodwy.commons.dialogs.RadioGroupDialog
 import com.goodwy.commons.dialogs.RadioGroupIconDialog
 import com.goodwy.commons.extensions.*
@@ -43,6 +40,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.core.graphics.drawable.toDrawable
 
 class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
 
@@ -154,7 +152,8 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
             startActivity(intent)
             return
         }
-        if (mStoredTextColor != getProperTextColor() || mStoredBackgroundColor != getProperBackgroundColor() || mStoredPrimaryColor != getProperPrimaryColor()
+        val backgroundColor = getProperBackgroundColor()
+        if (mStoredTextColor != getProperTextColor() || mStoredBackgroundColor != backgroundColor || mStoredPrimaryColor != getProperPrimaryColor()
             || mStoredDayCode != Formatter.getTodayCode() || mStoredDimPastEvents != config.dimPastEvents || mStoredDimCompletedTasks != config.dimCompletedTasks
             || mStoredHighlightWeekends != config.highlightWeekends || mStoredHighlightWeekendsColor != config.highlightWeekendsColor
         ) {
@@ -177,20 +176,20 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
             }
         }
 
-        updateStatusbarColor(getProperBackgroundColor())
+        updateStatusbarColor(backgroundColor)
         binding.apply {
             mainMenu.updateColors()
             storeStateVariables()
             updateWidgets()
             updateTextColors(calendarCoordinator)
-            fabExtendedOverlay.background = ColorDrawable(getProperBackgroundColor().adjustAlpha(0.8f))
+            fabExtendedOverlay.background = backgroundColor.adjustAlpha(0.8f).toDrawable()
             fabEventLabel.setTextColor(getProperTextColor())
             fabTaskLabel.setTextColor(getProperTextColor())
 
             fabTaskIcon.drawable.applyColorFilter(mStoredPrimaryColor.getContrastColor())
             fabTaskIcon.background.applyColorFilter(mStoredPrimaryColor)
 
-            searchHolder.background = ColorDrawable(getProperBackgroundColor())
+            searchHolder.background = backgroundColor.toDrawable()
             checkSwipeRefreshAvailability()
             checkShortcuts()
 
@@ -387,7 +386,7 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
         }
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "UseCompatLoadingForDrawables")
     private fun getNewEventShortcut(iconColor: Int): ShortcutInfo {
         val newEvent = getString(R.string.new_event)
         val newEventDrawable = resources.getDrawable(R.drawable.shortcut_event, theme)
@@ -405,7 +404,7 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
             .build()
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "UseCompatLoadingForDrawables")
     private fun getNewTaskShortcut(iconColor: Int): ShortcutInfo {
         val newTask = getString(R.string.new_task)
         val newTaskDrawable = resources.getDrawable(R.drawable.shortcut_task, theme)
@@ -581,28 +580,49 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
     }
 
     private fun addHolidays() {
-        val items = getHolidayRadioItems()
-        RadioGroupDialog(this, items) { selectedHoliday ->
-            SetRemindersDialog(this, OTHER_EVENT) {
-                val reminders = it
-                toast(com.goodwy.commons.R.string.importing)
-                ensureBackgroundThread {
-                    val holidays = getString(R.string.holidays)
-                    var eventTypeId = eventsHelper.getEventTypeIdWithClass(HOLIDAY_EVENT)
-                    if (eventTypeId == -1L) {
-                        eventTypeId = eventsHelper.createPredefinedEventType(holidays, R.color.default_holidays_color, HOLIDAY_EVENT, true)
-                    }
-                    val result = IcsImporter(this).importEvents(selectedHoliday as String, eventTypeId, 0, false, reminders)
-                    handleParseResult(result)
-                    if (result != ImportResult.IMPORT_FAIL) {
-                        runOnUiThread {
-                            updateViewPager()
-                            setupQuickFilter()
+        getHolidayRadioItems { items ->
+            RadioGroupDialog(this, items) { any ->
+                SelectHolidayTypesDialog(this, any as HolidayInfo) { pathsToImport ->
+                    SetRemindersDialog(this, OTHER_EVENT) { reminders ->
+                        toast(com.goodwy.commons.R.string.importing)
+                        ensureBackgroundThread {
+                            val result = pathsToImport
+                                .map { importHolidays(it, reminders) }
+                                .minBy { it.value }
+
+                            handleParseResult(result)
+                            if (result != ImportResult.IMPORT_FAIL) {
+                                runOnUiThread {
+                                    updateViewPager()
+                                    setupQuickFilter()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun importHolidays(path: String, reminders: ArrayList<Int>): ImportResult {
+        var eventTypeId = eventsHelper.getEventTypeIdWithClass(HOLIDAY_EVENT)
+        if (eventTypeId == -1L) {
+            eventTypeId = eventsHelper.createPredefinedEventType(
+                title = getString(R.string.holidays),
+                colorResId = R.color.default_holidays_color,
+                type = HOLIDAY_EVENT,
+                caldav = true
+            )
+        }
+
+        return IcsImporter(this).importEvents(
+            path = path,
+            defaultEventTypeId = eventTypeId,
+            calDAVCalendarId = 0,
+            overrideFileEventTypes = false,
+            eventReminders = reminders,
+            loadFromAssets = true
+        )
     }
 
     private fun tryAddBirthdays() {
@@ -822,24 +842,29 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
             contacts.forEach { contact ->
                 val events = if (birthdays) contact.birthdays else contact.anniversaries
                 events.forEach { birthdayAnniversary ->
+                    var missingYear = false
                     // private contacts are created in Simple Contacts Pro, so we can guarantee that they exist only in these 2 formats
                     val format = if (birthdayAnniversary.startsWith("--")) {
+                        missingYear = true
                         "--MM-dd"
                     } else {
                         "yyyy-MM-dd"
                     }
 
+                    var flags = if (missingYear) {
+                        FLAG_ALL_DAY or FLAG_MISSING_YEAR
+                    } else {
+                        FLAG_ALL_DAY
+                    }
+
                     val formatter = SimpleDateFormat(format, Locale.getDefault())
                     val date = formatter.parse(birthdayAnniversary)
-                    if (date.year < 70) {
-                        date.year = 70
-                    }
 
                     val timestamp = date.time / 1000L
                     val lastUpdated = System.currentTimeMillis()
                     val event = Event(
                         null, timestamp, timestamp, contact.name, reminder1Minutes = reminders[0], reminder2Minutes = reminders[1],
-                        reminder3Minutes = reminders[2], importId = contact.contactId.toString(), timeZone = DateTimeZone.getDefault().id, flags = FLAG_ALL_DAY,
+                        reminder3Minutes = reminders[2], importId = contact.contactId.toString(), timeZone = DateTimeZone.getDefault().id, flags = flags,
                         repeatInterval = YEAR, repeatRule = REPEAT_SAME_DAY, eventType = eventTypeId, source = source, lastUpdated = lastUpdated
                     )
 
@@ -1261,84 +1286,23 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
         updateViewPager(dayCode)
     }
 
-    // events fetched from Thunderbird, https://www.thunderbird.net/en-US/calendar/holidays and
-    // https://holidays.kayaposoft.com/public_holidays.php?year=2021
-    private fun getHolidayRadioItems(): ArrayList<RadioItem> {
-        val items = ArrayList<RadioItem>()
+    private fun getHolidayRadioItems(callback: (ArrayList<RadioItem>) -> Unit) {
+        ensureBackgroundThread {
+            val items = ArrayList<RadioItem>()
+            HolidayHelper(this).load().forEachIndexed { index, holidayInfo ->
+                items.add(
+                    RadioItem(
+                        id = index,
+                        title = holidayInfo.country,
+                        value = holidayInfo
+                    )
+                )
+            }
 
-        LinkedHashMap<String, String>().apply {
-            put("Algeria", "algeria.ics")
-            put("Argentina", "argentina.ics")
-            put("Australia", "australia.ics")
-            put("België", "belgium.ics")
-            put("Bolivia", "bolivia.ics")
-            put("Brasil", "brazil.ics")
-            put("България", "bulgaria.ics")
-            put("Canada", "canada.ics")
-            put("China", "china.ics")
-            put("Colombia", "colombia.ics")
-            put("Česká republika", "czech.ics")
-            put("Danmark", "denmark.ics")
-            put("Deutschland", "germany.ics")
-            put("Eesti", "estonia.ics")
-            put("España", "spain.ics")
-            put("Éire", "ireland.ics")
-            put("France", "france.ics")
-            put("Fürstentum Liechtenstein", "liechtenstein.ics")
-            put("Hellas", "greece.ics")
-            put("Hrvatska", "croatia.ics")
-            put("India", "india.ics")
-            put("Indonesia", "indonesia.ics")
-            put("Ísland", "iceland.ics")
-            put("Israel", "israel.ics")
-            put("Italia", "italy.ics")
-            put("Қазақстан Республикасы", "kazakhstan.ics")
-            put("المملكة المغربية", "morocco.ics")
-            put("Latvija", "latvia.ics")
-            put("Lietuva", "lithuania.ics")
-            put("Luxemburg", "luxembourg.ics")
-            put("Makedonija", "macedonia.ics")
-            put("Malaysia", "malaysia.ics")
-            put("Magyarország", "hungary.ics")
-            put("México", "mexico.ics")
-            put("Nederland", "netherlands.ics")
-            put("República de Nicaragua", "nicaragua.ics")
-            put("日本", "japan.ics")
-            put("Nigeria", "nigeria.ics")
-            put("Norge", "norway.ics")
-            put("Österreich", "austria.ics")
-            put("Pākistān", "pakistan.ics")
-            put("Polska", "poland.ics")
-            put("Portugal", "portugal.ics")
-            put("Россия", "russia.ics")
-            put("República de Costa Rica", "costarica.ics")
-            put("República Oriental del Uruguay", "uruguay.ics")
-            put("République d'Haïti", "haiti.ics")
-            put("România", "romania.ics")
-            put("Schweiz", "switzerland.ics")
-            put("Singapore", "singapore.ics")
-            put("한국", "southkorea.ics")
-            put("Srbija", "serbia.ics")
-            put("Slovenija", "slovenia.ics")
-            put("Slovensko", "slovakia.ics")
-            put("South Africa", "southafrica.ics")
-            put("Sri Lanka", "srilanka.ics")
-            put("Suomi", "finland.ics")
-            put("Sverige", "sweden.ics")
-            put("Taiwan", "taiwan.ics")
-            put("ราชอาณาจักรไทย", "thailand.ics")
-            put("Türkiye Cumhuriyeti", "turkey.ics")
-            put("Ukraine", "ukraine.ics")
-            put("United Kingdom", "unitedkingdom.ics")
-            put("United States", "unitedstates.ics")
-
-            var i = 0
-            for ((country, file) in this) {
-                items.add(RadioItem(i++, country, file))
+            runOnUiThread {
+                callback(items)
             }
         }
-
-        return items
     }
 
     private fun checkWhatsNewDialog() {

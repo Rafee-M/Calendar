@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.widget.RemoteViews
 import com.goodwy.calendar.R
 import com.goodwy.calendar.activities.SplashActivity
@@ -19,6 +20,7 @@ import com.goodwy.calendar.services.WidgetServiceEmpty
 import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.ensureBackgroundThread
 import org.joda.time.DateTime
+import androidx.core.net.toUri
 
 class MyWidgetListProvider : AppWidgetProvider() {
     private val NEW_EVENT = "new_event"
@@ -38,6 +40,13 @@ class MyWidgetListProvider : AppWidgetProvider() {
         ensureBackgroundThread {
             appWidgetManager.getAppWidgetIds(getComponentName(context)).forEach {
                 val widget = context.widgetsDB.getWidgetWithWidgetId(it)
+
+                val headerVisibility = if (widget?.header == true) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
                 val views = RemoteViews(context.packageName, R.layout.widget_event_list).apply {
                     applyColorFilter(R.id.widget_event_list_background, context.config.widgetBgColor)
                     setTextColor(R.id.widget_event_list_empty, secondTextColor)
@@ -47,6 +56,8 @@ class MyWidgetListProvider : AppWidgetProvider() {
                     setTextSize(R.id.widget_event_list_today, fontSize - 3f)
                     setVisibleIf(R.id.widget_name, context.config.showWidgetName)
                     setTextColor(R.id.widget_name, context.config.widgetLabelColor)
+
+                    setViewVisibility(R.id.widget_header_include, headerVisibility)
                 }
 
                 views.setImageViewBitmap(
@@ -63,7 +74,7 @@ class MyWidgetListProvider : AppWidgetProvider() {
 
                 Intent(context, WidgetService::class.java).apply {
                     putExtra(EVENT_LIST_PERIOD, widget?.period)
-                    data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
+                    data = this.toUri(Intent.URI_INTENT_SCHEME).toUri()
                     views.setRemoteAdapter(R.id.widget_event_list, this)
                 }
 
@@ -119,16 +130,29 @@ class MyWidgetListProvider : AppWidgetProvider() {
     // hacky solution for reseting the events list
     private fun goToToday(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context) ?: return
-        appWidgetManager.getAppWidgetIds(getComponentName(context)).forEach {
-            val views = RemoteViews(context.packageName, R.layout.widget_event_list)
-            Intent(context, WidgetServiceEmpty::class.java).apply {
-                data = Uri.parse(this.toUri(Intent.URI_INTENT_SCHEME))
-                views.setRemoteAdapter(R.id.widget_event_list, this)
+        ensureBackgroundThread {
+            appWidgetManager.getAppWidgetIds(getComponentName(context)).forEach {
+                val widget = context.widgetsDB.getWidgetWithWidgetId(it)
+                val headerVisibility = if (widget?.header == true) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+                val views = RemoteViews(context.packageName, R.layout.widget_event_list).apply {
+                    setViewVisibility(R.id.widget_event_list_today, headerVisibility)
+                    setViewVisibility(R.id.widget_event_go_to_today, headerVisibility)
+                    setViewVisibility(R.id.widget_event_new_event, headerVisibility)
+                }
+                Intent(context, WidgetServiceEmpty::class.java).apply {
+                    data = this.toUri(Intent.URI_INTENT_SCHEME).toUri()
+                    views.setRemoteAdapter(R.id.widget_event_list, this)
+                }
+
+                appWidgetManager.updateAppWidget(it, views)
             }
 
-            appWidgetManager.updateAppWidget(it, views)
+            performUpdate(context)
         }
-
-        performUpdate(context)
     }
 }

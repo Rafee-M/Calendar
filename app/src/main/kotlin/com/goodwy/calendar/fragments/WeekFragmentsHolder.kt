@@ -1,7 +1,7 @@
 package com.goodwy.calendar.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -25,6 +25,7 @@ import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.WEEK_SECONDS
 import com.goodwy.commons.views.MyViewPager
 import org.joda.time.DateTime
+import androidx.core.graphics.drawable.toDrawable
 
 class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
     private val PREFILLED_WEEKS = 151
@@ -44,13 +45,13 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
         super.onCreate(savedInstanceState)
         val dateTimeString = arguments?.getString(WEEK_START_DATE_TIME) ?: return
         currentWeekTS = (DateTime.parse(dateTimeString) ?: DateTime()).seconds()
-        thisWeekTS = DateTime.parse(requireContext().getFirstDayOfWeek(DateTime())).seconds()
+        updateThisWeekTS()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val textColor = requireContext().getProperTextColor()
         binding = FragmentWeekHolderBinding.inflate(inflater, container, false)
-        binding.root.background = ColorDrawable(requireContext().getProperBackgroundColor())
+        binding.root.background = requireContext().getProperBackgroundColor().toDrawable()
         binding.weekViewMonthLabel.setTextColor(textColor)
         binding.weekViewWeekNumber.setTextColor(textColor)
 
@@ -72,6 +73,7 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
         setupSeekbar()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupFragment() {
         addHours()
         setupWeeklyViewPager()
@@ -156,6 +158,7 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
         return weekTSs
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupWeeklyActionbarTitle(timestamp: Long) {
         val startDateTime = Formatter.getDateTimeFromTS(timestamp)
         val month = Formatter.getShortMonthName(requireContext(), startDateTime.monthOfYear)
@@ -214,12 +217,22 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
 
     private fun updateWeeklyViewDays(days: Int) {
         requireContext().config.weeklyViewDays = days
+        updateThisWeekTS()
+        updateCurrentWeekTS()
         updateDaysCount(days)
         setupWeeklyViewPager()
     }
 
     private fun updateDaysCount(cnt: Int) {
         binding.weekViewDaysCount.text = requireContext().resources.getQuantityString(com.goodwy.commons.R.plurals.days, cnt, cnt)
+    }
+
+    private fun updateThisWeekTS() {
+        thisWeekTS = DateTime.parse(requireContext().getFirstDayOfWeek(DateTime())).seconds()
+    }
+
+    private fun updateCurrentWeekTS() {
+        currentWeekTS = DateTime.parse(requireContext().getFirstDayOfWeek(DateTime(currentWeekTS * 1000))).seconds()
     }
 
     override fun refreshEvents() {
@@ -277,7 +290,7 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
             addHours(lightTextColor)
             weekViewWeekNumber.setTextColor(lightTextColor)
             weekViewMonthLabel.setTextColor(lightTextColor)
-            root.background = ColorDrawable(Color.WHITE)
+            root.background = Color.WHITE.toDrawable()
             (viewPager.adapter as? MyWeekPagerAdapter)?.togglePrintMode(viewPager.currentItem)
 
             Handler().postDelayed({
@@ -290,7 +303,7 @@ class WeekFragmentsHolder : MyFragmentHolder(), WeekFragmentListener {
                     weekViewWeekNumber.setTextColor(requireContext().getProperTextColor())
                     weekViewMonthLabel.setTextColor(requireContext().getProperTextColor())
                     addHours()
-                    root.background = ColorDrawable(requireContext().getProperBackgroundColor())
+                    root.background = requireContext().getProperBackgroundColor().toDrawable()
                     (viewPager.adapter as? MyWeekPagerAdapter)?.togglePrintMode(viewPager.currentItem)
                 }, 1000)
             }, 1000)

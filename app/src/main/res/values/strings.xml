@@ -172,7 +172,11 @@
     <string name="holidays">Holidays</string>
     <string name="add_holidays">Add holidays</string>
     <string name="national_holidays">National holidays</string>
+    <string name="public_holidays">Public holidays</string>
+    <string name="regional_holidays">Regional holidays</string>
+    <string name="other_holidays">Other holidays and observances</string>
     <string name="religious_holidays">Religious holidays</string>
+    <string name="select_holidays_to_import">Select holidays to import</string>
     <string name="holidays_imported_successfully">Holidays have been successfully imported into the \"Holidays\" event type</string>
     <string name="importing_some_holidays_failed">Importing some events failed</string>
     <string name="importing_holidays_failed">Importing holidays failed</string>
@@ -247,6 +251,9 @@
     <string name="status_tentative">Tentative</string>
     <string name="status_confirmed">Confirmed</string>
     <string name="status_canceled">Canceled</string>
+    <string name="access_level_public">Public</string>
+    <string name="access_level_private">Private</string>
+    <string name="access_level_confidential">Confidential</string>
 
     <!-- alternative versions for some languages, use the same translations if you are not sure what this means -->
     <!-- used in repetition, like "Every last Sunday" -->
@@ -285,6 +292,7 @@
         <item quantity="one">Within the next %d month</item>
         <item quantity="other">Within the next %d months</item>
     </plurals>
+    <string name="show_widget_header">Show header</string>
 
     <!-- Accessibility label -->
     <string name="accessibility_previous_month">Go to previous month</string>

@@ -3,7 +3,6 @@ package com.goodwy.calendar.activities
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.WindowManager
@@ -26,6 +25,7 @@ import com.goodwy.commons.extensions.*
 import com.goodwy.commons.helpers.*
 import com.goodwy.commons.models.RadioItem
 import org.joda.time.DateTime
+import androidx.core.graphics.drawable.toDrawable
 
 class TaskActivity : SimpleActivity() {
     private var mEventTypeId = REGULAR_EVENT_TYPE_ID
@@ -95,7 +95,7 @@ class TaskActivity : SimpleActivity() {
         val properBackgroundColor = getProperBackgroundColor()
         if (baseConfig.backgroundColor == white) {
             val colorToWhite = 0xFFf2f2f6.toInt()
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(colorToWhite))
+            supportActionBar?.setBackgroundDrawable(colorToWhite.toDrawable())
             window.decorView.setBackgroundColor(colorToWhite)
             window.statusBarColor = colorToWhite
             //window.navigationBarColor = colorToWhite
@@ -578,7 +578,7 @@ class TaskActivity : SimpleActivity() {
             this, getDatePickerDialogTheme(), dateSetListener, mTaskDateTime.year, mTaskDateTime.monthOfYear - 1, mTaskDateTime.dayOfMonth
         )
 
-        datePicker.datePicker.firstDayOfWeek = getJavaDayOfWeekFromJoda(config.firstDayOfWeek)
+        datePicker.datePicker.firstDayOfWeek = getJavaDayOfWeekFromISO(config.firstDayOfWeek)
         datePicker.show()
     }
 
@@ -683,18 +683,16 @@ class TaskActivity : SimpleActivity() {
     }
 
     private fun updateTaskCompletedButton() {
+        val primaryColor = getProperPrimaryColor()
         if (mTaskCompleted) {
-            binding.toggleMarkComplete.background = ContextCompat.getDrawable(this, com.goodwy.commons.R.drawable.button_background_stroke)
+            binding.toggleMarkComplete.background = ContextCompat.getDrawable(
+                this, com.goodwy.commons.R.drawable.button_background_stroke
+            )
             binding.toggleMarkComplete.setText(R.string.mark_incomplete)
             binding.toggleMarkComplete.setTextColor(getProperTextColor())
         } else {
-//            val markCompleteBgColor = if (isWhiteTheme()) {
-//                Color.WHITE
-//            } else {
-//                getProperPrimaryColor()
-//            }
-            val markCompleteBgColor = getProperPrimaryColor()
-            binding.toggleMarkComplete.setTextColor(markCompleteBgColor.getContrastColor())
+            binding.toggleMarkComplete.setTextColor(primaryColor.getContrastColor())
+            binding.toggleMarkComplete.background.applyColorFilter(primaryColor)
         }
     }
 

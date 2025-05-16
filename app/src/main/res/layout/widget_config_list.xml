@@ -20,70 +20,17 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
             android:layout_above="@+id/config_holder"
-            android:background="@drawable/widget_round_background"
             android:layout_marginBottom="38dp">
 
-            <TextClock
-                android:id="@+id/widget_event_list_today"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/widget_event_new_event"
-                android:layout_alignBottom="@+id/widget_event_new_event"
-                android:layout_toStartOf="@+id/widget_event_go_to_today"
-                android:ellipsize="end"
-                android:format12Hour="EEEE d MMM yyyy"
-                android:format24Hour="EEEE d MMM yyyy"
-                android:gravity="center_vertical"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:paddingStart="@dimen/bigger_margin"
-                android:paddingTop="@dimen/normal_margin"
-                android:paddingEnd="@dimen/smaller_margin"
-                android:textAllCaps="true"
-                android:textSize="@dimen/normal_text_size"
-                android:textStyle="bold"
-                tools:text="May 25 2022 (Wednesday)" />
-
-            <ImageView
-                android:id="@+id/widget_event_go_to_today"
-                style="@style/ArrowStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignTop="@+id/widget_event_new_event"
-                android:layout_alignBottom="@+id/widget_event_new_event"
-                android:layout_toStartOf="@+id/widget_event_new_event"
-                android:paddingStart="@dimen/medium_margin"
-                android:paddingTop="14dp"
-                android:paddingEnd="@dimen/medium_margin"
-                android:paddingBottom="@dimen/smaller_margin"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_today_vector" />
-
-            <ImageView
-                android:id="@+id/widget_event_new_event"
-                style="@style/ArrowStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:paddingStart="@dimen/medium_margin"
-                android:paddingTop="@dimen/normal_margin"
-                android:paddingEnd="@dimen/normal_margin"
-                android:paddingBottom="@dimen/small_margin"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_plus_vector" />
-
-            <com.goodwy.commons.views.MyRecyclerView
-                android:id="@+id/config_events_list"
+            <include
+                android:id="@+id/config_widget_preview"
+                layout="@layout/widget_config_event_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/widget_event_list_today"
                 android:layout_marginBottom="2dp"
                 android:clipToPadding="false"
                 android:divider="@null"
-                android:paddingTop="@dimen/medium_margin"
-                app:layoutManager="com.goodwy.commons.views.MyLinearLayoutManager" />
+                android:paddingTop="@dimen/medium_margin"/>
         </RelativeLayout>
 
         <TextView
@@ -163,14 +110,26 @@
                 android:paddingVertical="@dimen/normal_margin" />
 
             <RelativeLayout
+                android:id="@+id/show_widget_header_holder"
+                style="@style/SettingsHolderSwitchStyle"
+                android:layout_below="@+id/config_bg_seekbar">
+
+                <com.goodwy.commons.views.MyMaterialSwitch
+                    android:id="@+id/show_widget_header"
+                    style="@style/SettingsSwitchStyle"
+                    android:text="@string/show_widget_header"
+                    app:switchPadding="@dimen/bigger_margin"/>
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/configTextColorHolder"
                 style="@style/SettingsHolderStyle"
-                android:layout_below="@+id/config_bg_seekbar">
+                android:layout_below="@+id/show_widget_header_holder">
 
                 <com.goodwy.commons.views.MyTextView
                     android:id="@+id/config_text_color_label"
                     style="@style/SettingsTextLabelStyle"
-                    android:text="@string/text_color"/>
+                    android:text="@string/color"/>
 
                 <ImageView
                     android:id="@+id/config_text_color"
@@ -183,10 +142,17 @@
                     android:contentDescription="@null" />
             </RelativeLayout>
 
+            <include
+                android:id="@+id/dividerTextColor"
+                layout="@layout/divider_padding"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/configTextColorHolder"/>
+
             <RelativeLayout
                 android:id="@+id/configSecondaryTextColorHolder"
                 style="@style/SettingsHolderStyle"
-                android:layout_below="@+id/configTextColorHolder">
+                android:layout_below="@+id/dividerTextColor">
 
                 <com.goodwy.commons.views.MyTextView
                     android:id="@+id/config_secondary_text_color_label"
@@ -204,10 +170,17 @@
                     android:contentDescription="@null" />
             </RelativeLayout>
 
+            <include
+                android:id="@+id/dividerSecondaryTextColor"
+                layout="@layout/divider_padding"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/configSecondaryTextColorHolder"/>
+
             <RelativeLayout
                 android:id="@+id/configWidgetNameHolder"
                 style="@style/SettingsHolderSwitchStyle"
-                android:layout_below="@+id/configSecondaryTextColorHolder">
+                android:layout_below="@+id/dividerSecondaryTextColor">
 
                 <com.goodwy.commons.views.MyMaterialSwitch
                     android:id="@+id/configWidgetName"
@@ -224,7 +197,7 @@
                 <com.goodwy.commons.views.MyTextView
                     android:id="@+id/configWidgetNameTextColorLabel"
                     style="@style/SettingsTextLabelStyle"
-                    android:text="@string/text_color"/>
+                    android:text="@string/color"/>
 
                 <ImageView
                     android:id="@+id/configWidgetNameTextColor"

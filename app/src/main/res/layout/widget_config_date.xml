@@ -217,7 +217,7 @@
                 <com.goodwy.commons.views.MyTextView
                     android:id="@+id/configWidgetNameTextColorLabel"
                     style="@style/SettingsTextLabelStyle"
-                    android:text="@string/text_color"/>
+                    android:text="@string/color"/>
 
                 <ImageView
                     android:id="@+id/configWidgetNameTextColor"
