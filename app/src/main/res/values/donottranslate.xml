@@ -4,6 +4,13 @@
     <string name="app_name_g">Right Calendar</string>
 
     <!-- Release notes -->
+    <string name="release_632">
+        Support for setting event visibility\n
+        Option to hide date header in event list widget\n
+        Updated translations\n
+        Updated holiday data\n
+        Other minor bug fixes and improvements
+    </string>
     <string name="release_610">
         Improved performance, bug fixes
     </string>

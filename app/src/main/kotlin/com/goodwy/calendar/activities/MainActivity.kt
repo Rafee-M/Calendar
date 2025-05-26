@@ -1309,6 +1309,7 @@ class MainActivity : SimpleActivity(), RefreshRecyclerViewListener {
         arrayListOf<Release>().apply {
             add(Release(601, R.string.release_601))
             add(Release(610, R.string.release_610))
+            add(Release(632, R.string.release_632))
             checkWhatsNew(this, com.goodwy.calendar.BuildConfig.VERSION_CODE)
         }
     }

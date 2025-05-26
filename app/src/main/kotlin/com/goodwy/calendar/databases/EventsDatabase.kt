@@ -22,7 +22,7 @@ import com.goodwy.calendar.models.Widget
 import com.goodwy.commons.extensions.getProperPrimaryColor
 import java.util.concurrent.Executors
 
-@Database(entities = [Event::class, EventType::class, Widget::class, Task::class], version = 9)
+@Database(entities = [Event::class, EventType::class, Widget::class, Task::class], version = 11)
 @TypeConverters(Converters::class)
 abstract class EventsDatabase : RoomDatabase() {
 
